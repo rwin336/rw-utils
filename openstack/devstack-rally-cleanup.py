@@ -1,5 +1,34 @@
 #!/usr/bin/python
-###########################################################
+###############################################################################
+# Copyright 2017 R.A. Winters <rwin336@gmail.com>
+# All Rights Reserved.
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
+###############################################################################
+
+# Devstack Rall Cleanup.
+#
+# The Openstack Rally tester can sometimes crash when testing a large
+# scaling profile leaving the stack dirty with both routers and networks.
+#
+# This script will clean up the routers and networks created by the Rally
+# test run.  The script was targetted to run against a Devstack deployed
+# stack that has been configured with the Cisco ASR as the stack router.
+#
+# Steps to run:
+#  1. Source the openrc for the targetted stack
+#  2. Run the script.
+#
 #
 import os
 from neutronclient.v2_0 import client
