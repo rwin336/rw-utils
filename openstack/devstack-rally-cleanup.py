@@ -31,7 +31,9 @@
 #
 #
 import os
+import time
 from neutronclient.v2_0 import client
+from novaclient.client import Client
 
 def print_values(val, type):
     if type == 'ports':
@@ -45,6 +47,15 @@ def print_values(val, type):
             print("%s : %s" % (k, v))
         print('\n')
 
+def get_nova_credentials_v2():
+    d = {}
+    d['version'] = '2'
+    d['username'] = os.environ['OS_USERNAME']
+    d['api_key'] = os.environ['OS_PASSWORD']
+    d['auth_url'] = os.environ['OS_AUTH_URL']
+    d['project_id'] = os.environ['OS_TENANT_NAME']
+    return d
+
 def get_credentials():
     d = {}
     d['username'] = os.environ['OS_USERNAME']
@@ -57,17 +68,31 @@ def get_credentials():
 print("- Rally devstack cleanup - start")
 print("- Aqquiring credentials")
 credentials = get_credentials()
-print("- Creds aqquired")
+print("- Creds aquired")
 print("- Creating Neutron network client")
 neutron = client.Client(**credentials)
 print("- Neutron network client created")
+print("- Creating Nova client")
+nova_creds = get_nova_credentials_v2()
+nova = Client(**nova_creds)
+print("- Nova client created")
 
+print("- Getting list of servers")
+serverw = nova.servers.list(search_opts={'all_tenants': 1})
+print("- Server list aquired")
 print("- Getting list of networks")
 netw = neutron.list_networks()
-print("- Network list aqquired")
+print("- Network list aquired")
 print("- Getting list of Routers")
 rtrw = neutron.list_routers()
-print("- Router list aqquired")
+print("- Router list aquired")
+
+print("- Processing server list: {0}".format(len(serverw)))
+for server in serverw:
+    print("-- Deleting server {0}".format(server.name))
+    nova.servers.delete(server)
+    print("-- Server deleted")
+    time.sleep(2)
 
 rtr_name_prefix = "rally_net"
 backup_postfix = "HA_backup_1"
