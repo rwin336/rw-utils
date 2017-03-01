@@ -66,7 +66,7 @@ def get_credentials():
 
 
 print("- Rally devstack cleanup - start")
-print("- Aqquiring credentials")
+print("- Aquiring credentials")
 credentials = get_credentials()
 print("- Creds aquired")
 print("- Creating Neutron network client")
